@@ -16,15 +16,15 @@ export default function App() {
       .catch(error => console.error("Error Fetching Subjects", error))
   }
 
-  const handleSubjectAdded = () => {
+  const handleSubjectChanges = () => {
     fetchSubjects();
   }
 
   return (
     <>
       <h1 className="cursor-pointer flex items-center justify-center text-3xl font-bold underline">Subjects</h1>
-      <AddSubject onSubjectAdded={handleSubjectAdded} />
-      <SubjectList subjects={subjects} />
+      <AddSubject onSubjectAdded={handleSubjectChanges} />
+      <SubjectList subjects={subjects} onSubjectDeleted={handleSubjectChanges} onSubjectUpdated={handleSubjectChanges}/>
     </>
   )
 }
