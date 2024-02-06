@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
-export default function SubjectList({ subjects, onSubjectDeleted, onSubjectUpdated }) {
+export default function SubjectList({
+  subjects,
+  onSubjectDeleted,
+  onSubjectUpdated,
+}) {
   const handleDelete = (id) => {
     axios
       .delete(`http://localhost:9111/subjects/${id}`)
@@ -10,13 +14,27 @@ export default function SubjectList({ subjects, onSubjectDeleted, onSubjectUpdat
       })
       .catch((error) => console.error("Error Deleting Subject", error));
   };
-  const handleUpdate = (id) => {
+
+  const handleUpdate = (id, newName) => {
     axios
-      .put(`http://localhost:9111/subjects/${id}`)
+      .put(`http://localhost:9111/subjects/${id}`, { id: id, name: newName })
       .then(() => {
         onSubjectUpdated();
       })
       .catch((error) => console.error("Error Updating Subject", error));
+  };
+
+  const [editingSubjectId, setEditingSubjectId] = useState(null);
+  const [newSubjectName, setNewSubjectName] = useState("");
+
+  const handleEdit = (id, name) => {
+    setEditingSubjectId(id);
+    setNewSubjectName(name);
+  };
+
+  const handleSave = () => {
+    handleUpdate(editingSubjectId, newSubjectName);
+    setEditingSubjectId(null);
   };
 
   return (
@@ -43,20 +61,37 @@ export default function SubjectList({ subjects, onSubjectDeleted, onSubjectUpdat
                     {subject.id}
                   </td>
                   <td className="border px-4 py-2 flex justify-between items-center">
-                    <div
-                      className="mr-2"
-                      onClick={() => {
-                        handleUpdate(subject.id, subject.name);
-                      }}
-                    >
-                      {subject.name}
-                    </div>
-                    <button
-                      className="border rounded p-1 hover:bg-red-500 hover:text-white"
-                      onClick={() => handleDelete(subject.id)}
-                    >
-                      Delete
-                    </button>
+                    {editingSubjectId === subject.id ? (
+                      <>
+                        <input
+                          type="text"
+                          value={newSubjectName}
+                          onChange={(e) => setNewSubjectName(e.target.value)}
+                          className="border rounded px-2 py-1"
+                        />
+                        <button
+                          className="border rounded p-1 ml-2 bg-blue-500 text-white"
+                          onClick={handleSave}
+                        >
+                          Save
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div
+                          className="mr-2 cursor-pointer"
+                          onClick={() => handleEdit(subject.id, subject.name)}
+                        >
+                          {subject.name}
+                        </div>
+                        <button
+                          className="border rounded p-1 hover:bg-red-500 hover:text-white"
+                          onClick={() => handleDelete(subject.id)}
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}
