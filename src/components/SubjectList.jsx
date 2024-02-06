@@ -1,8 +1,7 @@
 import React,{useState,useEffect} from "react";
 import axios from "axios";
 
-export default function SubjectList(){
-    
+export default function SubjectList(subject){ 
     const [subjects,setSubjects] = useState([]);
 
     useEffect(()=>{
@@ -13,18 +12,27 @@ export default function SubjectList(){
 
     return(
         <div>
-            <h1>Subjects</h1>
             {subjects.length === 0 ? (
-                <p>No subjects Added</p>
+                <p className="flex items-center justify-center mt-8">Add Subjects to see a list.</p>
             ) :(
-                <ul>
-                    {subjects.map(subjects => (
-                        <li key={subjects.id}>
-                            {`ID:${subjects.id},NAME:${subjects.name} `}
-                        </li>
-                    ))}
-                </ul>
+                <div className="flex items-center justify-center mt-8">
+                <table className="table-auto">
+                <thead>
+                  <tr>
+                    <th className="cursor-pointer border px-4 py-2">ID</th>
+                    <th className="cursor-pointer border px-4 py-2">Subject Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {subjects.map((subject, index) => (
+                    <tr key={subject.id}>
+                      <td className="cursor-pointer border px-4 py-2">{subject.id}</td>
+                      <td className="border px-4 py-2">{subject.name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              </div>
             )}
         </div>
-    )
-}
+    )}
